@@ -352,7 +352,7 @@ TODO:
       <!-- Download STARR via maven if `starr.use.released` is set,
            and `starr.version` is specified (see the versions.properties properties file).
            Want to slow down STARR changes, using only released versions. -->
-      <if><isset property="starr.use.released"/><then>
+<!--       <if><isset property="starr.use.released"/><then>
         <echo message="Using Scala ${starr.version} for STARR."/>
         <artifact:dependencies pathId="starr.core.path">
           <artifact:remoteRepository refid="extra-repo"/>
@@ -361,12 +361,13 @@ TODO:
           <dependency groupId="org.scala-lang" artifactId="scala-compiler" version="${starr.version}"/>
         </artifact:dependencies></then>
       <else>
-        <path id="starr.core.path">
+ -->        <path id="starr.core.path">
           <pathelement location="${library.starr.jar}"/>
           <pathelement location="${reflect.starr.jar}"/>
           <pathelement location="${compiler.starr.jar}"/>
-        </path></else>
-      </if>
+        </path>
+        <!-- </path></else> -->
+      <!-- </if> -->
 
       <property name="maven-deps-done"     value="yep!"/>
     </then></if>
