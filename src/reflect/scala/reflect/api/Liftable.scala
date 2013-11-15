@@ -1,6 +1,9 @@
 package scala.reflect
 package api
 
+import scala.language.experimental.macros
+import scala.reflect.macros.Context
+
 trait Liftable[T] {
   def apply(universe: api.Universe, value: T): universe.Tree
 }
@@ -27,6 +30,29 @@ object Liftable {
       import universe._
       val symbol = Select(Ident(TermName("scala")), TermName("Symbol"))
       Apply(symbol, List(Literal(Constant(value.name))))
+    }
+  }
+
+  implicit def liftCaseClass[T]: Liftable[T] = macro liftCaseClassImpl[T]
+
+  def liftCaseClassImpl[T: c.WeakTypeTag](c: Context): c.Expr[Liftable[T]] = {
+    import c.universe._
+    val tpe = weakTypeOf[T]
+    if (!tpe.typeSymbol.asClass.isCaseClass) {
+      c.abort(c.enclosingPosition, "not a case class")
+    } else {
+      val constructor = tpe.declarations.collectFirst {
+        case m: MethodSymbol if m.isPrimaryConstructor => m
+      }.get
+      val params = constructor.paramss.head.map(field => q"Literal(Constant(value.${field.name}))")
+      c.Expr[Liftable[T]] { q"""
+        new scala.reflect.api.Liftable[$tpe] {
+          def apply(universe: scala.reflect.api.Universe, value: $tpe): universe.Tree = {
+            import universe._
+            Apply(Select(Ident(TermName(${tpe.toString})), TermName("apply")), List(..$params))
+          }
+        }
+      """ }
     }
   }
 }
