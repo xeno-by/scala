@@ -1,6 +1,9 @@
 package scala.reflect
 package api
 
+import scala.language.experimental.macros
+import scala.reflect.macros.WhiteboxContext
+
 trait Liftable[T] {
   def apply(universe: api.Universe, value: T): universe.Tree
 }
@@ -27,6 +30,36 @@ object Liftable {
       import universe._
       val symbol = Select(Ident(TermName("scala")), TermName("Symbol"))
       Apply(symbol, List(Literal(Constant(value.name))))
+    }
+  }
+
+  implicit def liftCaseClass[T]: Liftable[T] = macro liftCaseClassImpl[T]
+
+  def liftCaseClassImpl[T: c.WeakTypeTag](c: WhiteboxContext): c.Expr[Liftable[T]] = {
+    import c.universe._
+    val tpe = weakTypeOf[T]
+    if (!tpe.typeSymbol.asClass.isCaseClass) {
+      c.abort(c.enclosingPosition, "not a case class")
+    } else {
+      val paramss = tpe.declarations.collectFirst {
+        case m: MethodSymbol if m.isPrimaryConstructor => m
+      }.get.paramss
+      if (paramss.length > 1) {
+        c.abort(c.enclosingPosition, "a case class with multiple argument lists")
+      } else {
+        val paramTrees = paramss.head.map(param => q"lift(value.${param.name})")
+        c.Expr[Liftable[T]] { q"""
+          import scala.reflect.api._
+          import scala.reflect.api.Liftable._
+          new Liftable[$tpe] {
+            def apply(universe: Universe, value: $tpe): universe.Tree = {
+              import universe._
+              def lift[T](v: T)(implicit l: Liftable[T]) = l(universe, v)
+              Apply(Ident(TermName(${tpe.toString})), List(..$paramTrees))
+            }
+          }
+        """ }
+      }
     }
   }
 }
