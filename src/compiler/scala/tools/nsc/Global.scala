@@ -11,7 +11,7 @@ import java.io.{ File, FileOutputStream, PrintWriter, IOException, FileNotFoundE
 import java.net.URL
 import java.nio.charset.{ Charset, CharsetDecoder, IllegalCharsetNameException, UnsupportedCharsetException }
 import scala.collection.{ mutable, immutable }
-import io.{ SourceReader, AbstractFile, Path }
+import io.{ SourceReader, AbstractFile, PlainFile, ZipArchive, Path }
 import reporters.{ Reporter, ConsoleReporter }
 import util.{ ClassFileLookup, ClassPath, MergedClassPath, StatisticsInfo, returning }
 import scala.reflect.ClassTag
@@ -647,6 +647,33 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     val runsRightAfter = None
   } with GenBCode
 
+  // phaseName = "analyzeDeps"
+  object analyzeDeps extends {
+    val global: Global.this.type = Global.this
+  } with SubComponent {
+    val phaseName = "analyzeDeps"
+    val runsAfter = List("jvm")
+    val runsRightAfter = None
+
+    def newPhase(prev: Phase): GlobalPhase = {
+      new AnalyzeDepsPhase(prev)
+    }
+    private class AnalyzeDepsPhase(prev: Phase) extends GlobalPhase(prev) {
+      def name = phaseName
+      def apply(unit: CompilationUnit) {
+        val entries = settings.classpath.value.split(":").map(s => new File(s))
+        def findEntry(p: File) = entries.find(e => p.getAbsolutePath.startsWith(e.getAbsolutePath))
+        val usedEntries = loaders.completedClassfiles.flatMap({
+          case f: PlainFile => findEntry(f.file)
+          case f: ZipArchive#Entry => findEntry(f.underlyingSource.get.file)
+          case _ => None
+        }).distinct
+        val unusedEntries = entries.diff(usedEntries)
+        unusedEntries.foreach(e => warning("unused classpath entry " + e))
+      }
+    }
+  }
+
   // phaseName = "terminal"
   object terminal extends {
     val global: Global.this.type = Global.this
@@ -719,6 +746,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       closureElimination      -> "optimization: eliminate uncalled closures",
       constantOptimization    -> "optimization: optimize null and other constants",
       deadCode                -> "optimization: eliminate dead code",
+      analyzeDeps             -> "collect completed dependencies from the classpath",
       terminal                -> "the last phase during a compilation run"
     )
 
