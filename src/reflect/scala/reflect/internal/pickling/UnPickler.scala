@@ -272,7 +272,7 @@ abstract class UnPickler {
                       |because it (or its dependencies) are missing. Check your build definition for
                       |missing or conflicting dependencies. (Re-run with `-Ylog-classpath` to see the problematic classpath.)
                       |A full rebuild may help if '$filename' was compiled against an incompatible version of ${owner.fullName}.$advice""".stripMargin
-                owner.newStubSymbol(name, missingMessage)
+                symbolTable.symbolOnCompletion.newStubSymbol(stubName, missingMessage)
               }
             }
           }
