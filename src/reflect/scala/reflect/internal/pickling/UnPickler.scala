@@ -267,7 +267,7 @@ abstract class UnPickler {
                 // (5) Create a stub symbol to defer hard failure a little longer.
                 val advice = moduleAdvice(s"${owner.fullName}.$name")
                 val missingMessage =
-                  s"""|${symbolTable.completingSymbol}missing or invalid dependency detected while loading class file '$filename'.
+                  s"""|missing or invalid dependency detected while loading class file '$filename'.
                       |Could not access ${name.longString} in ${owner.kindString} ${owner.fullName},
                       |because it (or its dependencies) are missing. Check your build definition for
                       |missing or conflicting dependencies. (Re-run with `-Ylog-classpath` to see the problematic classpath.)
