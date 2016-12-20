@@ -1,4 +1,4 @@
-pos: NoPosition missing or invalid dependency detected while loading class file 'U.class'.
+pos: source-newSource1.scala,line-3,offset=30 missing or invalid dependency detected while loading class file 'U.class'.
 Could not access type T in package pack1,
 because it (or its dependencies) are missing. Check your build definition for
 missing or conflicting dependencies. (Re-run with `-Ylog-classpath` to see the problematic classpath.)
