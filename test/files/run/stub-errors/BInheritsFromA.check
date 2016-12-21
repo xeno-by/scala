@@ -1,0 +1,7 @@
+error: newSource1.scala:3: missing or invalid dependency detected while loading class file 'B.class'.
+Could not access type A in package stuberrors,
+because it (or its dependencies) are missing. Check your build definition for
+missing or conflicting dependencies. (Re-run with `-Ylog-classpath` to see the problematic classpath.)
+A full rebuild may help if 'B.class' was compiled against an incompatible version of stuberrors.
+    class C {
+          ^
