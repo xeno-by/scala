@@ -272,7 +272,8 @@ abstract class UnPickler {
                       |because it (or its dependencies) are missing. Check your build definition for
                       |missing or conflicting dependencies. (Re-run with `-Ylog-classpath` to see the problematic classpath.)
                       |A full rebuild may help if '$filename' was compiled against an incompatible version of ${owner.fullName}.$advice""".stripMargin
-                symbolTable.symbolOnCompletion.newStubSymbol(stubName, missingMessage)
+                val atPos = symbolTable.symbolOnCompletion.pos
+                NoSymbol.newStubSymbol(stubName, missingMessage, atPos)
               }
             }
           }
@@ -398,7 +399,7 @@ abstract class UnPickler {
         val sym = readSymbolRef() match {
           case stub: StubSymbol if !stub.isClass =>
             // SI-8502 This allows us to create a stub for a unpickled reference to `missingPackage.Foo`.
-            stub.owner.newStubSymbol(stub.name.toTypeName, stub.missingMessage, isPackage = true)
+            stub.owner.newStubSymbol(stub.name.toTypeName, stub.missingMessage, NoPosition, isPackage = true)
           case sym => sym
         }
         ThisType(sym)

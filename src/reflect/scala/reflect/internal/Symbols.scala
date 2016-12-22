@@ -495,9 +495,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
      *  failure to the point when that name is used for something, which is
      *  often to the point of never.
      */
-    def newStubSymbol(name: Name, missingMessage: String, isPackage: Boolean = false): Symbol = name match {
-      case n: TypeName  => if (isPackage) new StubPackageClassSymbol(this, n, missingMessage) else new StubClassSymbol(this, n, missingMessage)
-      case _            => new StubTermSymbol(this, name.toTermName, missingMessage)
+    def newStubSymbol(name: Name, missingMessage: String, pos: Position, isPackage: Boolean = false): Symbol = name match {
+      case n: TypeName  => if (isPackage) new StubPackageClassSymbol(this, n, missingMessage, pos) else new StubClassSymbol(this, n, missingMessage, pos)
+      case _            => new StubTermSymbol(this, name.toTermName, missingMessage, pos)
     }
 
     /** Given a field, construct a term symbol that represents the source construct that gave rise the field */
@@ -3466,7 +3466,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
   trait StubSymbol extends Symbol {
     devWarning("creating stub symbol to defer error: " + missingMessage)
 
-    def owner0: Symbol
+    def pos: Position
     def missingMessage: String
 
     /** Fail the stub by throwing a [[scala.reflect.internal.MissingRequirementError]]. */
@@ -3479,7 +3479,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     private def fail[T](alt: T): T = {
       // Avoid issuing lots of redundant errors
       if (!hasFlag(IS_ERROR)) {
-        globalError(owner0.pos, missingMessage)
+        globalError(pos, missingMessage)
         if (settings.debug.value)
           (new Throwable).printStackTrace
 
@@ -3496,9 +3496,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     override def rawInfo         = fail(NoType)
     override def companionSymbol = fail(NoSymbol)
   }
-  class StubClassSymbol(val owner0: Symbol, name0: TypeName, val missingMessage: String) extends ClassSymbol(owner0, owner0.pos, name0) with StubSymbol
-  class StubPackageClassSymbol(val owner0: Symbol, name0: TypeName, val missingMessage: String) extends PackageClassSymbol(owner0, owner0.pos, name0) with StubSymbol
-  class StubTermSymbol(val owner0: Symbol, name0: TermName, val missingMessage: String) extends TermSymbol(owner0, owner0.pos, name0) with StubSymbol
+  class StubClassSymbol(owner0: Symbol, name0: TypeName, val missingMessage: String, override val pos: Position) extends ClassSymbol(owner0, owner0.pos, name0) with StubSymbol
+  class StubPackageClassSymbol(owner0: Symbol, name0: TypeName, val missingMessage: String, override val pos: Position) extends PackageClassSymbol(owner0, owner0.pos, name0) with StubSymbol
+  class StubTermSymbol(owner0: Symbol, name0: TermName, val missingMessage: String, override val pos: Position) extends TermSymbol(owner0, owner0.pos, name0) with StubSymbol
 
   trait FreeSymbol extends Symbol {
     def origin: String
