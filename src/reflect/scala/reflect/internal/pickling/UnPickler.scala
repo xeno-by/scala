@@ -65,6 +65,9 @@ abstract class UnPickler {
     /** A map from symbols to their associated `decls` scopes */
     private val symScopes = mutable.HashMap[Symbol, Scope]()
 
+    /** Keeps track of the last symbol that triggered unpickling for stub error reports */
+    private var inProgress: List[Symbol] = Nil
+
     private def expect(expected: Int, msg: => String) {
       val tag = readByte()
       if (tag != expected)
@@ -266,11 +269,11 @@ abstract class UnPickler {
               adjust(mirrorThatLoaded(owner).missingHook(owner, name)) orElse {
                 // (5) Create a stub symbol to defer hard failure a little longer.
                 val advice = moduleAdvice(s"${owner.fullName}.$name")
+                val culprit = inProgress.headOption.map(s => s"'${s.kindString} ${s.fullName}'").getOrElse("")
                 val missingMessage =
-                  s"""|missing or invalid dependency detected while loading class file '$filename'.
-                      |Could not access ${name.longString} in ${owner.kindString} ${owner.fullName},
-                      |because it (or its dependencies) are missing. Check your build definition for
-                      |missing or conflicting dependencies. (Re-run with `-Ylog-classpath` to see the problematic classpath.)
+                  s"""|missing or invalid dependency while loading $culprit in class file '$filename'.
+                      |Already compiled $culprit requires access to ${name.longString} in ${owner.kindString} ${owner.fullName}.
+                      |Make sure that ${name.longString} is in your classpath and check for conflicting dependencies with `-Ylog-classpath`.
                       |A full rebuild may help if '$filename' was compiled against an incompatible version of ${owner.fullName}.$advice""".stripMargin
                 val atPos = symbolTable.symbolOnCompletion.pos
                 NoSymbol.newStubSymbol(stubName, missingMessage, atPos)
@@ -339,6 +342,7 @@ abstract class UnPickler {
         if (shouldEnterInOwnerScope)
           symScope(sym.owner) enter sym
 
+        inProgress ::= sym
         sym
       }
 

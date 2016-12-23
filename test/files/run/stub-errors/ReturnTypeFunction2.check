@@ -1,0 +1,6 @@
+error: newSource1.scala:5: missing or invalid dependency while loading 'method stuberrors.B.foo' in class file 'B.class'.
+Already compiled 'method stuberrors.B.foo' requires access to type A in package stuberrors.
+Make sure that type A is in your classpath and check for conflicting dependencies with `-Ylog-classpath`.
+A full rebuild may help if 'B.class' was compiled against an incompatible version of stuberrors.
+      val b = new B {}
+          ^

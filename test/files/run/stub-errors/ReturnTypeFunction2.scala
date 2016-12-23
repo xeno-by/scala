@@ -2,17 +2,30 @@ object Test extends scala.tools.partest.StubErrorMessageTest {
   def codeA = """
     package stuberrors
     class A
+    class AA
   """
 
   def codeB = """
     package stuberrors
-    class B[D <: A]
+
+    class B {
+      def foo: A = new A
+    }
   """
 
   def userCode = """
     package stuberrors
-    object C extends App {
-      println(new B)
+
+    abstract class C extends App {
+      val b = new B {}
+
+      // Use other symbols in the meanwhile
+      val aa = new AA
+      val dummy = 1
+      println(dummy)
+
+      // Should blow up
+      b.foo
     }
   """
 

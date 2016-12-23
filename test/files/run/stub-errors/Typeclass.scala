@@ -12,7 +12,7 @@ object Test extends scala.tools.partest.StubErrorMessageTest {
   def userCode = """
     package stuberrors
     // Here we want a stub error not an implicit not found error
-    class C { println(new B) }
+    class C { println(new B(1)) }
   """
 
   def removeFromClasspath(): Unit = {

@@ -1,7 +1,6 @@
-error: newSource1.scala:3: missing or invalid dependency detected while loading class file 'E.class'.
-Could not access type A in package stuberrors,
-because it (or its dependencies) are missing. Check your build definition for
-missing or conflicting dependencies. (Re-run with `-Ylog-classpath` to see the problematic classpath.)
+error: newSource1.scala:3: missing or invalid dependency while loading 'constructor stuberrors.E.<init>' in class file 'E.class'.
+Already compiled 'constructor stuberrors.E.<init>' requires access to type A in package stuberrors.
+Make sure that type A is in your classpath and check for conflicting dependencies with `-Ylog-classpath`.
 A full rebuild may help if 'E.class' was compiled against an incompatible version of stuberrors.
     class C {
           ^
@@ -9,10 +8,9 @@ error: newSource1.scala:4: overriding type D in class B with bounds <: stuberror
  type D has incompatible type
       new B { type D = E }
                    ^
-error: newSource1.scala:4: missing or invalid dependency detected while loading class file 'B.class'.
-Could not access type A in package stuberrors,
-because it (or its dependencies) are missing. Check your build definition for
-missing or conflicting dependencies. (Re-run with `-Ylog-classpath` to see the problematic classpath.)
+error: newSource1.scala:4: missing or invalid dependency while loading 'type stuberrors.B.D' in class file 'B.class'.
+Already compiled 'type stuberrors.B.D' requires access to type A in package stuberrors.
+Make sure that type A is in your classpath and check for conflicting dependencies with `-Ylog-classpath`.
 A full rebuild may help if 'B.class' was compiled against an incompatible version of stuberrors.
       new B { type D = E }
           ^

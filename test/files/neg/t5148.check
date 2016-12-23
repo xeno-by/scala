@@ -1,7 +1,6 @@
-t5148.scala:4: error: missing or invalid dependency detected while loading class file 'Imports.class'.
-Could not access term memberHandlers in class scala.tools.nsc.interpreter.IMain,
-because it (or its dependencies) are missing. Check your build definition for
-missing or conflicting dependencies. (Re-run with `-Ylog-classpath` to see the problematic classpath.)
+t5148.scala:4: error: missing or invalid dependency while loading 'value scala.tools.nsc.interpreter.Imports.sym' in class file 'Imports.class'.
+Already compiled 'value scala.tools.nsc.interpreter.Imports.sym' requires access to term memberHandlers in class scala.tools.nsc.interpreter.IMain.
+Make sure that term memberHandlers is in your classpath and check for conflicting dependencies with `-Ylog-classpath`.
 A full rebuild may help if 'Imports.class' was compiled against an incompatible version of scala.tools.nsc.interpreter.IMain.
 class IMain extends Imports
       ^
