@@ -1,5 +1,5 @@
-error: newSource1.scala:4: missing or invalid dependency while loading 'constructor stuberrors.D.<init>' in class file 'D.class'.
-Already compiled 'constructor stuberrors.D.<init>' requires access to type A in package stuberrors.
+error: newSource1.scala:4: missing or invalid dependency while loading 'class stuberrors.D' in class file 'D.class'.
+Already compiled 'class stuberrors.D' requires access to type A in package stuberrors.
 Make sure that type A is in your classpath and check for conflicting dependencies with `-Ylog-classpath`.
 A full rebuild may help if 'D.class' was compiled against an incompatible version of stuberrors.
     abstract class C extends App {

@@ -9,7 +9,9 @@ object Test extends scala.tools.partest.StubErrorMessageTest {
     package stuberrors
 
     class B {
+      def bar: String = ???
       def foo: A = new A
+      def baz: String = ???
     }
   """
 
