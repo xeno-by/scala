@@ -275,7 +275,7 @@ abstract class UnPickler {
                       |Already compiled $culprit requires access to ${name.longString} in ${owner.kindString} ${owner.fullName}.
                       |Make sure that ${name.longString} is in your classpath and check for conflicting dependencies with `-Ylog-classpath`.
                       |A full rebuild may help if '$filename' was compiled against an incompatible version of ${owner.fullName}.$advice""".stripMargin
-                val atPos = symbolTable.symbolOnCompletion.pos
+                val atPos = symbolTable.lastKnownPosition
                 NoSymbol.newStubSymbol(stubName, missingMessage, atPos)
               }
             }

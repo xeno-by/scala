@@ -1491,7 +1491,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
      */
     def info: Type = try {
       if (pos.isDefined)
-        self.symbolOnCompletion = this
+        self.lastKnownPosition = pos
       var cnt = 0
       while (validTo == NoPeriod) {
         assert(infos ne null, this.name)

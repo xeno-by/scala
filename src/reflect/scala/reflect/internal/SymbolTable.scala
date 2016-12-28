@@ -50,7 +50,7 @@ abstract class SymbolTable extends macros.Universe
 {
 
   val gen = new InternalTreeGen { val global: SymbolTable.this.type = SymbolTable.this }
-  var symbolOnCompletion: Symbol = NoSymbol
+  var lastKnownPosition: Position = NoPosition
 
   def log(msg: => AnyRef): Unit
 
