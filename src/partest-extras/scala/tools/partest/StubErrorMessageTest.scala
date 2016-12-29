@@ -1,15 +1,16 @@
 package scala.tools.partest
 
-import java.io.File
-
 trait StubErrorMessageTest extends StoreReporterDirectTest {
   // Stub to feed to partest, unused
   def code = throw new Error("Use `userCode` instead of `code`.")
 
-  def compileCode(code: String) = {
-    val classpath = List(sys.props("partest.lib"), testOutput.path)
-      .mkString(sys.props("path.separator"))
-    compileString(newCompiler("-cp", classpath, "-d", testOutput.path))(code)
+  val classpath = List(sys.props("partest.lib"), testOutput.path)
+    .mkString(sys.props("path.separator"))
+
+  def compileCode(codes: String*) = {
+    val global = newCompiler("-cp", classpath, "-d", testOutput.path)
+    val sourceFiles = newSources(codes: _*)
+    withRun(global)(_ compileSources sourceFiles)
   }
 
   def removeClasses(inPackage: String, classNames: Seq[String]): Unit = {
@@ -25,6 +26,7 @@ trait StubErrorMessageTest extends StoreReporterDirectTest {
   def codeA: String
   def codeB: String
   def userCode: String
+  def extraUserCode: String = ""
 
   def show(): Unit = {
     compileCode(codeA)
@@ -34,7 +36,8 @@ trait StubErrorMessageTest extends StoreReporterDirectTest {
     assert(filteredInfos.isEmpty, filteredInfos)
     removeFromClasspath()
 
-    compileCode(userCode)
+    if (extraUserCode == "") compileCode(userCode)
+    else compileCode(userCode, extraUserCode)
     import scala.reflect.internal.util.Position
     filteredInfos.map { report =>
       print(if (report.severity == storeReporter.ERROR) "error: " else "")
