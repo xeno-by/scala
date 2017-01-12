@@ -136,6 +136,7 @@ trait ScalaSettings extends AbsScalaSettings
   val sourceReader       = StringSetting       ("-Xsource-reader", "classname", "Specify a custom method for reading source files.", "")
   val strictInference    = BooleanSetting      ("-Xstrict-inference", "Don't infer known-unsound types")
   val source             = ScalaVersionSetting ("-Xsource", "version", "Treat compiler input as Scala source for the specified version, see SI-8126.", initial = ScalaVersion("2.11"))
+  val analyzeDeps        = BooleanSetting      ("-Xanalyze-deps", "Report unused compiler classpath entries.")
 
   val XnoPatmatAnalysis = BooleanSetting ("-Xno-patmat-analysis", "Don't perform exhaustivity/unreachability analysis. Also, ignore @switch annotation.")
   val XfullLubs         = BooleanSetting ("-Xfull-lubs", "Retains pre 2.10 behavior of less aggressive truncation of least upper bounds.")

@@ -669,7 +669,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
           case _ => None
         }).distinct
         val unusedEntries = entries.diff(usedEntries)
-        unusedEntries.foreach(e => warning("unused classpath entry " + e))
+        if (settings.analyzeDeps.value)
+          unusedEntries.foreach(e => warning("unused classpath entry " + e))
       }
     }
   }
