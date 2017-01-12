@@ -269,10 +269,10 @@ abstract class UnPickler {
               adjust(mirrorThatLoaded(owner).missingHook(owner, name)) orElse {
                 // (5) Create a stub symbol to defer hard failure a little longer.
                 val advice = moduleAdvice(s"${owner.fullName}.$name")
-                val culprit = s"'${lazyCompletingSymbol.kindString} ${lazyCompletingSymbol.fullName}'"
                 val missingMessage =
-                  s"""|missing or invalid dependency while loading $culprit in class file '$filename'.
-                      |Already compiled $culprit requires access to ${name.longString} in ${owner.kindString} ${owner.fullName}.
+                  s"""|Symbol '${name.nameKind} ${owner.fullName}.$name' is missing from the classpath.
+                      |This symbol is required by '${lazyCompletingSymbol.kindString} ${lazyCompletingSymbol.fullName}'.
+                      |
                       |Make sure that ${name.longString} is in your classpath and check for conflicting dependencies with `-Ylog-classpath`.
                       |A full rebuild may help if '$filename' was compiled against an incompatible version of ${owner.fullName}.$advice""".stripMargin
                 val atPos = symbolTable.lastKnownPosition

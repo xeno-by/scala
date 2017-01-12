@@ -1,5 +1,6 @@
-error: newSource1.scala:3: missing or invalid dependency while loading ' pack1.U.<refinement>' in class file 'U.class'.
-Already compiled ' pack1.U.<refinement>' requires access to type T in package pack1.
+error: newSource1.scala:3: Symbol 'type pack1.T' is missing from the classpath.
+This symbol is required by 'method pack1.U.t'.
+
 Make sure that type T is in your classpath and check for conflicting dependencies with `-Ylog-classpath`.
 A full rebuild may help if 'U.class' was compiled against an incompatible version of pack1.
     object Test {
