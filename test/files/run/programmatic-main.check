@@ -24,4 +24,5 @@ superaccessors   6  add super accessors in traits and nested classes
     delambdafy  22  remove lambdas
          icode  23  generate portable intermediate code
            jvm  24  generate JVM bytecode
-      terminal  25  the last phase during a compilation run
+   analyzeDeps  25  collect completed dependencies from the classpath
+      terminal  26  the last phase during a compilation run

@@ -26,8 +26,9 @@ superaccessors   6  add super accessors in traits and nested classes
          icode  23  generate portable intermediate code
 #partest !-optimise
            jvm  24  generate JVM bytecode
-       ploogin  25  A sample phase that does so many things it's kind of hard...
-      terminal  26  the last phase during a compilation run
+   analyzeDeps  25  collect completed dependencies from the classpath
+       ploogin  26  A sample phase that does so many things it's kind of hard...
+      terminal  27  the last phase during a compilation run
 #partest -optimise
        inliner  24  optimization: do inlining
 inlinehandlers  25  optimization: inline exception handlers
@@ -35,6 +36,7 @@ inlinehandlers  25  optimization: inline exception handlers
       constopt  27  optimization: optimize null and other constants
            dce  28  optimization: eliminate dead code
            jvm  29  generate JVM bytecode
-       ploogin  30  A sample phase that does so many things it's kind of hard...
-      terminal  31  the last phase during a compilation run
+   analyzeDeps  30  collect completed dependencies from the classpath
+       ploogin  31  A sample phase that does so many things it's kind of hard...
+      terminal  32  the last phase during a compilation run
 #partest
