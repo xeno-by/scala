@@ -275,6 +275,7 @@ abstract class UnPickler {
                       |
                       |Make sure that ${name.longString} is in your classpath and check for conflicting dependencies with `-Ylog-classpath`.
                       |A full rebuild may help if '$filename' was compiled against an incompatible version of ${owner.fullName}.$advice""".stripMargin
+                val stubName = if (tag == EXTref) name else name.toTypeName
                 val atPos = symbolTable.lastKnownPosition
                 NoSymbol.newStubSymbol(stubName, missingMessage, atPos)
               }

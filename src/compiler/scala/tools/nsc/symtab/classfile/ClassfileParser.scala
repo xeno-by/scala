@@ -1152,6 +1152,7 @@ abstract class ClassfileParser {
       val member = (
         if (enclosing == clazz) entry.scope lookup name
         else lookupMemberAtTyperPhaseIfPossible(enclosing, name)
+      )
       def newStub = enclosing.newStubSymbol(name, s"Unable to locate class corresponding to inner class entry for $name in owner ${entry.outerName}", enclosing.pos)
       member.orElse(newStub)
     }
