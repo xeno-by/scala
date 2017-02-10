@@ -660,7 +660,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     }
     private class AnalyzeDepsPhase(prev: Phase) extends GlobalPhase(prev) {
       def name = phaseName
-      def apply(unit: CompilationUnit) {
+
+      override def run() {
+        echoPhaseSummary(this)
         val entries = settings.classpath.value.split(":").map(s => new File(s))
         def findEntry(p: File) = entries.find(e => p.getAbsolutePath.startsWith(e.getAbsolutePath))
         val usedEntries = loaders.completedClassfiles.flatMap({
@@ -671,6 +673,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         val unusedEntries = entries.diff(usedEntries)
         if (settings.analyzeDeps.value)
           unusedEntries.foreach(e => warning("unused classpath entry " + e))
+      }
+
+      override def apply(unit: CompilationUnit) {
+        // do nothing - everything is done in run
       }
     }
   }
